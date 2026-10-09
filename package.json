@@ -1,0 +1,21 @@
+{
+  "name": "bulong-sa-bahay",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "scripts": {
+    "serve": "node tools/serve.mjs",
+    "serve:qa": "node tools/serve.mjs build/qa-web 8061",
+    "assets": "node tools/generate-assets.mjs",
+    "test:web": "node tests/expansion-web.mjs",
+    "test:resilience": "node tests/web-resilience.mjs",
+    "test:release": "node tests/release-safe.mjs",
+    "test:entry": "node tests/expansion-web.mjs",
+    "test:save": "node tests/save-web.mjs",
+    "test:floor": "node tests/floor-regression.mjs",
+    "test:surfaces": "node tests/surface-visual.mjs",
+    "test:expansion": "node tests/expansion-web.mjs",
+    "build": "powershell -ExecutionPolicy Bypass -File tools/build.ps1"
+  },
+  "devDependencies": { "playwright": "1.58.2" }
+}

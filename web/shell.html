@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101b18">
+  <title>$GODOT_PROJECT_NAME</title>
+  <style>
+    *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0;overflow:hidden;background:#080e0c;color:#ded7be;touch-action:none}
+    body{font-family:Arial,sans-serif}#canvas{display:block;outline:0;width:100%;height:100%;border:0}
+    #loading,#rotate{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:36px;text-align:center;background:#0d1815;z-index:5}
+    .eyebrow{font-size:11px;letter-spacing:.24em;color:#b6a16b;margin:0 0 24px}h1{font-family:Georgia,serif;font-weight:400;font-size:clamp(32px,6vw,60px);line-height:1.05;letter-spacing:.06em;margin:0 0 22px}
+    p{font-size:15px;line-height:1.7;color:#99aaa0;max-width:440px}progress{width:min(320px,75vw);height:4px;accent-color:#b6a16b;border:0;margin:22px 0;background:#24332b}
+    #notice{color:#d0b9a7;white-space:pre-line}#rotate{display:none;z-index:10}.phone{width:76px;height:42px;border:2px solid #b6a16b;border-radius:6px;margin-bottom:36px;position:relative}.phone:after{content:'';position:absolute;right:5px;top:16px;width:4px;height:4px;border:1px solid #b6a16b;border-radius:50%}
+    #fullscreen{position:fixed;right:12px;bottom:10px;z-index:3;background:#102018b3;border:1px solid #8b805744;color:#c6c1a9;font-size:11px;padding:8px 11px;cursor:pointer}#fullscreen:focus-visible{outline:2px solid #b6a16b}
+    .pointer-locked #fullscreen{visibility:hidden}
+    @media(orientation:portrait) and (pointer:coarse){#rotate{display:flex}#fullscreen{display:none}}
+  </style>
+  $GODOT_HEAD_INCLUDE
+</head>
+<body>
+  <canvas id="canvas" tabindex="0" aria-label="Bulong sa Bahay game. Use WASD to move and E to interact.">A WebGL 2 browser is needed to play.</canvas>
+  <div id="loading" role="status"><div class="eyebrow">A PHILIPPINE FOLKLORE HORROR</div><h1>BULONG<br>SA BAHAY</h1><p id="message">Preparing the house…</p><progress id="progress"></progress><p id="notice"></p></div>
+  <div id="rotate"><div class="phone" aria-hidden="true"></div><h1>Turn your phone<br>sideways.</h1><p>Best played in landscape, with headphones.<br>Ihiga ang iyong telepono para maglaro.</p></div>
+  <button id="fullscreen" aria-label="Toggle fullscreen">FULLSCREEN ↗</button>
+  <noscript>JavaScript is required to play Bulong sa Bahay.</noscript>
+  <script src="$GODOT_URL"></script>
+  <script>
+    const config=$GODOT_CONFIG;
+    const engine=new Engine(config);
+    const loading=document.getElementById('loading'),progress=document.getElementById('progress');
+    const missing=Engine.getMissingFeatures({threads:$GODOT_THREADS_ENABLED});
+    function fail(error){document.getElementById('message').textContent='The house could not load.';document.getElementById('notice').textContent='Try a current Chrome or Firefox browser with WebGL 2 enabled, or use the Windows download.\n'+(error.message||String(error));progress.hidden=true;}
+    if(missing.length)fail('Missing browser features: '+missing.join(', '));
+    else engine.startGame({onProgress:(current,total)=>{if(total){progress.max=total;progress.value=current;}else progress.removeAttribute('value');}}).then(()=>loading.remove()).catch(fail);
+    const canvas=document.getElementById('canvas');
+    const pauseForDisplayChange=(reason='display')=>{if(window.bulongPause)window.bulongPause(reason);};
+    document.getElementById('fullscreen').addEventListener('click',async()=>{
+      // Fullscreen consumes a user gesture; do not race a second pointer-lock
+      // request here. The visible Resume button supplies a fresh gesture.
+      pauseForDisplayChange();
+      try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{}
+      canvas.focus();
+    });
+    document.addEventListener('fullscreenchange',()=>{
+      pauseForDisplayChange();
+      requestAnimationFrame(()=>canvas.focus());
+      document.getElementById('fullscreen').textContent=document.fullscreenElement?'EXIT FULLSCREEN ↙':'FULLSCREEN ↗';
+    });
+    let hadPointerLock=false;
+    document.addEventListener('pointerlockchange',()=>{
+      const locked=document.pointerLockElement===canvas;
+      document.body.classList.toggle('pointer-locked',locked);
+      if(hadPointerLock&&!locked)pauseForDisplayChange('pointer');
+      hadPointerLock=locked;
+    });
+    document.addEventListener('pointerlockerror',pauseForDisplayChange);
+    const portrait=matchMedia('(orientation:portrait) and (pointer:coarse)');
+    portrait.addEventListener('change',()=>{if(portrait.matches&&window.bulongPause)window.bulongPause();});
+    document.addEventListener('visibilitychange',()=>{if(document.hidden&&window.bulongPause)window.bulongPause();});
+    window.addEventListener('beforeunload',()=>{if(window.bulongMic?.stop)window.bulongMic.stop();});
+  </script>
+</body>
+</html>

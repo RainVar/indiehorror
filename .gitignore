@@ -1,0 +1,15 @@
+.godot/
+.tools/
+.downloads/
+build/
+node_modules/
+test-results/
+playwright-report/
+*.tmp
+*.log
+.DS_Store
+.playwright-mcp/
+.env
+.env.*
+!.env.example
+.godot/export_credentials.cfg

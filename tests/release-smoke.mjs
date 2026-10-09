@@ -1,0 +1,42 @@
+import {chromium} from 'playwright';
+import assert from 'node:assert/strict';
+import {writeFileSync} from 'node:fs';
+const browser=await chromium.launch({headless:true,args:['--use-angle=d3d11','--enable-webgl','--ignore-gpu-blocklist']});
+const page=await browser.newPage({viewport:{width:1280,height:720}});
+const errors=[],requests=[];let ready=false;
+page.on('pageerror',e=>errors.push(e.message));
+page.on('console',m=>{if(m.type()==='error')errors.push(m.text());if(m.text().includes('BULONG_READY'))ready=true;});
+page.on('request',r=>requests.push(r.url()));
+try{
+  await page.goto('http://127.0.0.1:8060/?qa=1');
+  for(let i=0;i<120&&!ready;i++)await page.waitForTimeout(250);
+  assert.ok(ready,'Release game reaches its ready state');
+  await page.waitForTimeout(1000);
+  assert.equal(await page.evaluate(()=>typeof window.bulongCommand),'undefined');
+  assert.equal(await page.evaluate(()=>typeof window.bulongTest),'undefined');
+  await page.mouse.click(215,382);await page.waitForTimeout(400);
+  await page.mouse.click(480,575);await page.waitForTimeout(500);
+  await page.screenshot({path:'build/qa/release-arrival.png'});
+  assert.equal(await page.evaluate(()=>document.pointerLockElement!==null),false,'Arrival note keeps the mouse free');
+  await page.mouse.click(480,361);await page.waitForTimeout(500);
+  assert.equal(await page.evaluate(()=>document.pointerLockElement!==null),true,'Closing the arrival note enables mouse look');
+  await page.keyboard.down('w');await page.waitForTimeout(900);await page.keyboard.up('w');
+  await page.screenshot({path:'build/qa/release-gameplay.png'});
+  await page.keyboard.press('Escape');await page.waitForTimeout(400);
+  assert.equal(await page.evaluate(()=>document.pointerLockElement!==null),false,'Pause releases mouse look');
+  await page.screenshot({path:'build/qa/release-pause.png'});
+  await page.locator('#fullscreen').click();await page.waitForTimeout(600);
+  assert.equal(await page.evaluate(()=>!!document.fullscreenElement),true,'Real release fullscreen engages');
+  assert.equal(await page.evaluate(()=>!!document.pointerLockElement),false,'Fullscreen keeps pause cursor usable');
+  await page.mouse.click(480,169);await page.waitForTimeout(600);
+  assert.equal(await page.evaluate(()=>!!document.pointerLockElement),true,'Release resume restores capture in fullscreen');
+  await page.evaluate(()=>document.exitFullscreen());await page.waitForTimeout(600);
+  assert.equal(await page.evaluate(()=>!!document.pointerLockElement),false,'Fullscreen exit releases cursor');
+  await page.mouse.click(480,169);await page.waitForTimeout(600);
+  assert.equal(await page.evaluate(()=>!!document.pointerLockElement),true,'Release resume works after fullscreen exit');
+  assert.deepEqual(errors,[]);
+  assert.ok(requests.every(u=>new URL(u).hostname==='127.0.0.1'),'No third-party runtime requests');
+  writeFileSync('build/qa/release-report.json',JSON.stringify({status:'passed',debugBridge:false,errors,requests},null,2));
+  console.log('PASS release boot, actual start controls, keyboard input, pause, no debug bridge, no external requests');
+}catch(e){console.error(e);process.exitCode=1;}
+finally{await browser.close();}

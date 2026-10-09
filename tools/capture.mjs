@@ -1,0 +1,18 @@
+import {chromium} from 'playwright';
+const browser=await chromium.launch({headless:true,args:['--use-angle=d3d11','--enable-webgl','--ignore-gpu-blocklist']});
+const page=await browser.newPage({viewport:{width:1280,height:720}});
+page.on('console',m=>console.log(m.type(),m.text()));
+page.on('pageerror',e=>console.error(e));
+await page.goto('http://127.0.0.1:8060/?qa=1');
+await page.waitForFunction(()=>window.bulongTest?.state?.ready,{},{timeout:45000});
+await page.waitForTimeout(2000);
+console.log(await page.evaluate(()=>window.bulongTest.state));
+await page.screenshot({path:'build/title.png'});
+await page.evaluate(()=>window.bulongCommand(JSON.stringify({action:'start'})));
+await page.evaluate(()=>window.bulongCommand(JSON.stringify({action:'close_note'})));
+await page.evaluate(()=>window.bulongCommand(JSON.stringify({action:'interact',id:'fuse'})));
+await page.evaluate(()=>window.bulongCommand(JSON.stringify({action:'teleport',x:0,z:6.7,yaw:0,pitch:-6})));
+await page.waitForTimeout(2000);
+await page.screenshot({path:'build/sala.png'});
+console.log(await page.evaluate(()=>window.bulongTest.state));
+await browser.close();

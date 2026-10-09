@@ -1,0 +1,47 @@
+{
+  "version": 1,
+  "reviewed": "2026-10-09",
+  "assets": [
+    {
+      "files": "assets/models/*.glb",
+      "title": "Furniture Kit",
+      "author": "Kenney",
+      "source": "https://kenney.nl/assets/furniture-kit",
+      "download": "https://kenney.nl/media/pages/assets/furniture-kit/440e0608a4-1677580847/kenney_furniture-kit.zip",
+      "license": "CC0-1.0",
+      "license_file": "assets/licenses/Kenney-Furniture-CC0.txt",
+      "modifications": "Selected models; runtime scaling, orientation, tinting and roughness adjustment.",
+      "attribution_required": false
+    },
+    {
+      "files": "assets/fonts/CormorantGaramond.ttf",
+      "author": "Christian Thalmann and contributors",
+      "source": "https://github.com/google/fonts/tree/main/ofl/cormorantgaramond",
+      "license": "OFL-1.1",
+      "license_file": "assets/licenses/CormorantGaramond-OFL.txt",
+      "modifications": "None"
+    },
+    {
+      "files": "assets/fonts/Inter.ttf",
+      "author": "Rasmus Andersson and contributors",
+      "source": "https://github.com/google/fonts/tree/main/ofl/inter",
+      "license": "OFL-1.1",
+      "license_file": "assets/licenses/Inter-OFL.txt",
+      "modifications": "None"
+    },
+    {
+      "files": ["assets/textures/*", "assets/audio/*", "assets/icon.svg"],
+      "author": "Original project assets, created with Codex assistance",
+      "source": "tools/generate-assets.mjs and source SVGs",
+      "license": "Project-owned; no third-party source material",
+      "modifications": "Deterministic synthesis and original vector artwork; restored family photograph variant added for v0.2 cinematics."
+    },
+    {
+      "files": ["scripts/world.gd", "scripts/entity.gd"],
+      "author": "Original project geometry, created with Codex assistance",
+      "source": "Authored procedural mesh construction",
+      "license": "Project-owned; no third-party source material",
+      "modifications": "Original house, Filipino props, palm foliage and creature"
+    }
+  ]
+}

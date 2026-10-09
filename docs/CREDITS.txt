@@ -1,0 +1,30 @@
+BULONG SA BAHAY
+
+Original fiction, authored house, creature mesh, procedural textures and synthesized
+sound design created for this project with assistance from OpenAI Codex.
+No sampled music, voice cloning, or recordings of real people are included.
+
+Furniture Kit — Kenney
+https://kenney.nl/assets/furniture-kit
+CC0 1.0 Universal. Original models have been resized and tinted for this game.
+License: licenses/Kenney-Furniture-CC0.txt
+
+Cormorant Garamond — Christian Thalmann and contributors
+https://github.com/google/fonts/tree/main/ofl/cormorantgaramond
+SIL Open Font License 1.1. License: licenses/CormorantGaramond-OFL.txt
+
+Inter — Rasmus Andersson and contributors
+https://github.com/google/fonts/tree/main/ofl/inter
+SIL Open Font License 1.1. License: licenses/Inter-OFL.txt
+
+Godot Engine — Juan Linietsky, Ariel Manzur, and Godot contributors
+https://godotengine.org/license/
+MIT license. See licenses/Godot-MIT.txt and licenses/Godot-COPYRIGHT.txt
+for the engine and its bundled third-party acknowledgments.
+
+Development-only tools (not included in game exports):
+GdUnit4 — MIT, https://github.com/godot-gdunit-labs/gdUnit4
+Playwright — Apache 2.0, https://github.com/microsoft/playwright
+
+Hapunan was a visual/pacing reference only. No assets, characters, dialogue,
+music, level layouts, or branding from that game are included.
